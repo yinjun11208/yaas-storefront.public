@@ -17,8 +17,8 @@ angular.module('ds.products')
      * Listens to the 'cart:updated' event.  Once the item has been added to the cart, and the updated
      * cart information has been retrieved from the service, the 'cart' view will be shown.
      */
-    .controller('ProductDetailCtrl', ['$scope', '$rootScope', '$location', 'CartSvc', 'product', 'lastCatId', 'variantId', 'GlobalData', 'CategorySvc','$filter', '$uibModal', 'shippingZones', 'Notification', 'ProductExtensionHelper', 'ProductVariantsHelper', 'variants', 'variantPrices', 'productFactory', 'FeeSvc',
-        function($scope, $rootScope, $location, CartSvc, product, lastCatId, variantId, GlobalData, CategorySvc, $filter, $uibModal, shippingZones, Notification, ProductExtensionHelper, ProductVariantsHelper, variants, variantPrices, productFactory, FeeSvc) {
+    .controller('ProductDetailCtrl', ['$scope', '$rootScope', '$location', 'CartSvc', 'WishlistSvc', 'AuthSvc', 'AuthDialogManager', 'product', 'lastCatId', 'variantId', 'GlobalData', 'CategorySvc','$filter', '$uibModal', 'shippingZones', 'Notification', 'ProductExtensionHelper', 'ProductVariantsHelper', 'variants', 'variantPrices', 'productFactory', 'FeeSvc',
+        function($scope, $rootScope, $location, CartSvc, WishlistSvc, AuthSvc, AuthDialogManager, product, lastCatId, variantId, GlobalData, CategorySvc, $filter, $uibModal, shippingZones, Notification, ProductExtensionHelper, ProductVariantsHelper, variants, variantPrices, productFactory, FeeSvc) {
             var modalInstance;
 
             $scope.activeTab = 'description';
@@ -95,6 +95,14 @@ angular.module('ds.products')
             $scope.productDetailQty = 1;
             $scope.buyButtonEnabled = true;
 
+            $scope.wishButtonEnabled = true;
+            $scope.addedToWishlist = false;
+
+            var wishlistItem = {id: $scope.product.id, name: $scope.product.name};
+            if (WishlistSvc.findWishlistItem(wishlistItem)) {
+                $scope.addedToWishlist = true;
+            }
+
             $scope.showShippingRates = function(){
 
                 modalInstance = $uibModal.open({
@@ -128,6 +136,15 @@ angular.module('ds.products')
 
             $scope.$on('$destroy', unbind);
 
+            var unbind2 = $rootScope.$on('wishlist:updated', function () {
+                $scope.addedToWishlist = false;
+                if (WishlistSvc.findWishlistItem(wishlistItem)) {
+                    $scope.addedToWishlist = true;
+                }
+            });
+
+            $scope.$on('$destroy', unbind2);
+
             /** Add the product to the cart.  'Buy' button is disabled while cart update is in progress. */
             $scope.addToCartFromDetailPage = function () {
                 $scope.error = false;
@@ -148,6 +165,40 @@ angular.module('ds.products')
                 }).finally(function() {
                     $scope.buyButtonEnabled = true;
                 });
+            };
+
+            /** Add the product to the wishlist.  'Wish' button is disabled while wishlist update is in progress. */
+            function addToWishlist() {
+                $scope.error = false;
+                $scope.wishButtonEnabled = false;
+
+                WishlistSvc.addProductToWishlist(wishlistItem, $scope.product.prices,
+                        $filter('translate')('PRODUCTS_NOTE_IN_WISHLIST')).then(function () {
+                    var productsAddedToWishlist = $filter('translate')('PRODUCTS_ADDED_TO_WISHLIST');
+                    Notification.success({message: '1 ' + productsAddedToWishlist, delay: 3000});
+                }, function () {
+                    $scope.error = 'ERROR_ADDING_TO_WISHLIST';
+                }).finally(function () {
+                    $scope.wishButtonEnabled = true;
+                });
+            }
+
+            $scope.addToWishlistFromDetailPage = function () {
+                if (!AuthSvc.isAuthenticated()) {
+                    var dlg = AuthDialogManager.open({windowClass:'mobileLoginModal'}, {}, {}, true);
+
+                    dlg.then(function(){
+                        if (AuthSvc.isAuthenticated()) {
+                            addToWishlist();
+                        }
+                    },
+                    function(){
+
+                    });
+                }
+                else {
+                    addToWishlist();
+                }
             };
 
             $scope.changeQty = function () {
@@ -172,6 +223,12 @@ angular.module('ds.products')
 					$scope.product = productFactory.fromProductVariant(product.product, activeVariant, prices);
                     // Update the selected variant
 					$scope.selectedVariant = activeVariant;
+                    
+                    wishlistItem.itemYrn = $scope.selectedVariant.yrn;
+                    $scope.addedToWishlist = false;
+                    if (WishlistSvc.findWishlistItem(wishlistItem)) {
+                        $scope.addedToWishlist = true;
+                    }
                     // The selected variant was updated by the user, check if this new select variant has a fee bound to it
                     // As this action is asynchronous, hide the fees in the front-end first
                     $scope.productFees = [];

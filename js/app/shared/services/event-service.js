@@ -16,8 +16,8 @@
  *  Encapsulates complex event logic, such as reloading states or reloading objects that are not specific to a particular page.
  */
 angular.module('ds.shared')
-    .factory('EventSvc', ['$state', '$stateParams', 'settings', 'CartSvc', 'CategorySvc',
-        function ($state, $stateParams, settings, CartSvc, CategorySvc) {
+    .factory('EventSvc', ['$state', '$stateParams', 'settings', 'CartSvc', 'WishlistSvc', 'CategorySvc',
+        function ($state, $stateParams, settings, CartSvc, WishlistSvc, CategorySvc) {
 
             return {
 
@@ -27,6 +27,7 @@ angular.module('ds.shared')
                 onSiteChange: function () {
 
                     CartSvc.getCart();
+                    WishlistSvc.refreshWishlist();
 
                     if ($state.is('base.checkout.details') || $state.is('base.category') || $state.is('base.product.detail')) {
                         $state.transitionTo($state.current, $stateParams, {
@@ -47,6 +48,7 @@ angular.module('ds.shared')
                     // cart is already loaded on login, initialization and siteChange - no need for separate refresh
                     if (eveObj.source !== settings.eventSource.login && eveObj.source !== settings.eventSource.initialization && eveObj.source !== settings.eventSource.siteUpdate) {
                         CartSvc.getCart();
+                        WishlistSvc.refreshWishlist();
                     }
                     // Any state that requires an updated localized data load should be refreshed (with exception of checkout,
                     //   as cart update is handled separately due to its global nature)

@@ -13,13 +13,14 @@
 
 angular.module('ds.account')
 
-    .controller('AccountCtrl', ['$scope', 'addresses', 'account', 'orders', 'OrderListSvc', 'AccountSvc', '$uibModal', 'GlobalData', '$translate',
+    .controller('AccountCtrl', ['$scope', '$rootScope', 'addresses', 'account', 'orders', 'OrderListSvc', 'AccountSvc', 'WishlistSvc', '$uibModal', 'GlobalData', '$translate',
 
-        function ($scope, addresses, account, orders, OrderListSvc, AccountSvc, $uibModal, GlobalData, $translate) {
+        function ($scope, $rootScope, addresses, account, orders, OrderListSvc, AccountSvc, WishlistSvc, $uibModal, GlobalData, $translate) {
 
             var self = this;
             self.allOrdersLoaded = false;
             var modalInstance;
+            var totalPriceModalInstance;
             var customerNumber = !!account ? account.customerNumber : null;
 
             var getDefaultAddress = function () {
@@ -33,6 +34,9 @@ angular.module('ds.account')
             $scope.addresses = addresses;
             $scope.orders = orders;
             $scope.defaultAddress = getDefaultAddress();
+            $scope.wishlist = WishlistSvc.getLocalWishlist();
+            $scope.totalPrice = 0;
+            $scope.totalPriceButtonEnabled = $scope.wishlist.items.length > 0;
 
             // show more or less addresses.
             $scope.showAddressDefault = 6;
@@ -45,6 +49,34 @@ angular.module('ds.account')
             $scope.showAllOrdersButton = true;
             $scope.showOrderButtons = ($scope.orders.length >= $scope.showOrdersDefault);
             $scope.showOrdersFilter = $scope.showOrdersDefault;
+
+            // show more or less wishlist items.
+            $scope.showWishlistDefault = 6;
+            $scope.showAllWishlistButton = true;
+            $scope.showWishlistButtons = ($scope.wishlist.items.length >= $scope.showWishlistDefault);
+            $scope.showWishlistFilter = $scope.showWishlistDefault;
+
+            var unbind = $rootScope.$on('wishlist:updated', function () {
+                $scope.wishlist = WishlistSvc.getLocalWishlist();
+
+                if (totalPriceModalInstance) {
+                    totalPriceModalInstance.opened.then(function () {
+                        // If the total price dialog is opened, update the total price
+                        // immediately
+                        WishlistSvc.getWishlistTotalPriceAmount().then(function (result) {
+                            $scope.totalPrice = result.totalPrice;
+                        });
+                    }, function () {
+                        $scope.totalPriceButtonEnabled = $scope.wishlist.items.length > 0;
+                    });
+                } else {
+                    $scope.totalPriceButtonEnabled = $scope.wishlist.items.length > 0;
+                }
+
+                $scope.showWishlistButtons = ($scope.wishlist.items.length >= $scope.showWishlistDefault);
+            });
+
+            $scope.$on('$destroy', unbind);
 
             var extractServerSideErrors = function (response) {
                 var errors = [];
@@ -72,6 +104,9 @@ angular.module('ds.account')
             $scope.$on('$destroy', function () {
                 if (modalInstance) {
                     modalInstance.dismiss('cancel');
+                }
+                if (totalPriceModalInstance) {
+                    totalPriceModalInstance.dismiss('ok');
                 }
             });
 
@@ -182,6 +217,27 @@ angular.module('ds.account')
                 );
             };
 
+            $scope.openTotalPriceModal = function () {
+                $scope.totalPriceButtonEnabled = false;
+
+                WishlistSvc.getWishlistTotalPriceAmount().then(function (result) {
+                    $scope.totalPrice = result.totalPrice;
+                    totalPriceModalInstance = $uibModal.open({
+                        templateUrl: './js/app/account/templates/total-price-dialog.html',
+                        scope: $scope,
+                        backdrop: 'static'
+                    });
+                    totalPriceModalInstance.result.finally(function () {
+                        $scope.totalPriceButtonEnabled = $scope.wishlist.items.length > 0;
+                    });
+                }, function () {
+                    $scope.totalPriceButtonEnabled = $scope.wishlist.items.length > 0;
+                });
+            };
+
+            $scope.closeTotalPriceModal = function () {
+                totalPriceModalInstance.close();
+            };
 
             $scope.showAllOrders = function () {
                 $scope.showAllOrdersButton = !$scope.showAllOrdersButton;
@@ -208,6 +264,12 @@ angular.module('ds.account')
                 $scope.showAllAddressButton = !$scope.showAllAddressButton;
                 $scope.showAddressFilter = $scope.showAllAddressButton ? $scope.showAddressDefault : $scope.addresses.length;
                 $scope.showAddressButtons = ($scope.addresses.length > $scope.showAddressDefault);
+            };
+
+            $scope.showAllWishlist = function () {
+                $scope.showAllWishlistButton = !$scope.showAllWishlistButton;
+                $scope.showWishlistFilter = $scope.showAllWishlistButton ? $scope.showWishlistDefault : $scope.wishlist.items.length;
+                $scope.showWishlistButtons = ($scope.wishlist.items.length > $scope.showWishlistDefault);
             };
 
             /*

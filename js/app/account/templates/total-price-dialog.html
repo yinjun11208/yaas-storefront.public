@@ -1,0 +1,16 @@
+<!-- Modal -->
+<form name="addressForm" novalidate ng-cloak>
+  <div class="modal-header">
+    <button class="close" ng-click="closeTotalPriceModal()"><span aria-hidden="true">&times;</span><span class="sr-only">{{'CLOSE' | translate}}</span></button>
+    <h4 class="modal-title" id="myModalLabel">{{'TOTAL_PRICE' | translate}}</h4>
+  </div>
+  <div class="modal-body" stop-event="touchend">
+
+      <h4">{{totalPrice | currency: wishlist.currencySymbol}}</h4>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" ng-click="closeTotalPriceModal()" class="btn btn-primary btn-lg">{{'OK' | translate}}</button>
+  </div>
+</form>

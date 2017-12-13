@@ -9952,6 +9952,21 @@ section .hero-unit {
 .account .orderItemsContainer .img-col {
   padding: 0;
 }
+.account .wishlistCard {
+  margin: 0 20px 20px 0;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  padding-right: 0;
+  padding-left: 8px;
+}
+.account .wishlistCard .panel {
+  margin-bottom: 0;
+  padding-right: 0;
+  height: auto;
+}
+.account .wishlistCard .leftCol {
+  font-size: 11px;
+}
 .account .breadCrumb {
   font-family: Georgia, "Times New Roman", Times, serif, serif;
   text-transform: none;

@@ -13,8 +13,8 @@
 'use strict';
 angular.module('ds.auth')
     /** Encapsulates the logic for what needs to happen once a user is logged in or logged out.*/
-    .factory('SessionSvc', ['AccountSvc', 'CartSvc', 'GlobalData', '$state', '$stateParams', 'settings', '$rootScope', '$q',
-        function (AccountSvc, CartSvc, GlobalData, $state, $stateParams, settings, $rootScope, $q) {
+    .factory('SessionSvc', ['AccountSvc', 'CartSvc', 'WishlistSvc', 'GlobalData', '$state', '$stateParams', 'settings', '$rootScope', '$q',
+        function (AccountSvc, CartSvc, WishlistSvc, GlobalData, $state, $stateParams, settings, $rootScope, $q) {
 
             function navigateAfterLogin(context){
                 if(context && context.targetState){
@@ -26,6 +26,7 @@ angular.module('ds.auth')
                 var deferred = $q.defer();
                 CartSvc.refreshCartAfterLogin(GlobalData.customerAccount.id).then(
                     function () {
+                        WishlistSvc.refreshWishlistAfterLogin(GlobalData.customerAccount.id);
                         deferred.resolve();
                     },
                     function () {
@@ -86,6 +87,7 @@ angular.module('ds.auth')
             afterLogOut: function(){
                 GlobalData.customerAccount = null;
                 CartSvc.resetCart();
+                WishlistSvc.resetWishlist();
 
                 $rootScope.$broadcast('coupon:logout');
 

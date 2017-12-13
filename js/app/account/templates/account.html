@@ -107,4 +107,70 @@
 
   </section>
 
+  <section class="lightgray" ng-cloak>
+    <div class="container-fluid">
+      <div class="row">
+          <div class="col-xs-12">
+            <div class="section-headline clearfix">
+              <h2 class="pull-left">{{'WISHLIST' | translate}}</h2>
+              <button id="add-address-btn" class="btn btn-secondary btn-md pull-right" ng-disabled="!totalPriceButtonEnabled" ng-click="openTotalPriceModal()">
+              {{'TOTAL_PRICE' | translate}}
+              </button>
+            </div>
+        </div>
+      </div>
+
+      <div class="hidden-md hidden-lg row">
+        <div ng-repeat="itemRow in wishlist.items | limitTo: showWishlistFilter " class="col-sm-4 col-xs-12 wishlistCard" >
+            <div class="panel">
+                <div class="panel-body " >
+                    <div class="row">
+                        <div class="col-sm-8 col-xs-8 leftCol">
+                            <p>
+                              <strong>{{'DATE'|translate}}</strong><br/>
+                              {{itemRow.createdAt | date: 'medium'}}
+                            </p>
+                            <p>
+                                <strong>{{'PRODUCT'|translate}}</strong><br/>
+                                {{itemRow.name}}
+                            </p>
+                            <strong>{{'PRICE'|translate}}</strong><br/>
+                            {{itemRow.price.effectiveAmount | currency: wishlist.currencySymbol}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <div ng-if="wishlist.items.length"  class="table-responsive hidden-sm hidden-xs">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>{{'DATE' | translate}}</th>
+              <th>{{'PRODUCT' | translate}}</th>
+              <th>{{'PRICE' | translate}}</ht>
+            </tr>
+          </thead>
+          <tbody>
+              <tr ng-repeat="itemRow in wishlist.items | limitTo: showWishlistFilter ">
+                  <td>{{itemRow.createdAt | date: 'medium'}}</td>
+                  <td>{{itemRow.name}}</a></td>
+                  <td>{{itemRow.price.effectiveAmount | currency: wishlist.currencySymbol}}</td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p ng-if="!wishlist.items.length">{{'EMPTY_WISHLIST' | translate}}</p>
+      <p ng-if="!wishlist.id">{{'FAIL_WISHLIST' | translate}}</p>
+
+      <div class="text-center" ng-if="showWishlistButtons">
+        <button class="btn btn-link" ng-show="showAllWishlistButton" ng-click="showAllWishlist()">{{'SHOW_ALL' | translate}} <span class="glyphicon glyphicon-chevron-down"/></button>
+        <button class="btn btn-link" ng-show="!showAllWishlistButton" ng-click="showAllWishlist()">{{'SHOW_LESS' | translate}} <span class="glyphicon glyphicon-chevron-up"/></button>
+      </div>
+
+    </div>
+  </section>
+
 </div>

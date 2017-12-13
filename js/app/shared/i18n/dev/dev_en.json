@@ -25,6 +25,8 @@
     //XBUT
     "BACK_TO_CHECKOUT": "Back to checkout",
     //XFLD
+    "OK": "OK",
+    //XFLD
     "CANCEL": "Cancel",
     //XBUT
     "CHECKOUT": "Checkout",
@@ -360,6 +362,14 @@
     "BUY": "Buy",
     //XBUT
     "ADD_TO_CART": "Add to Cart",
+    //XBUT
+    "ADD_TO_WISHLIST": "Add to Wishlist",
+    //XBUT
+    "ALREADY_IN_WISHLIST": "Already in Wishlist",
+    //XBUT
+    "PRODUCTS_NOTE_IN_WISHLIST": "I want it!",
+    //XMSG
+    "PRODUCTS_ADDED_TO_WISHLIST": "product successfully added to your wishlist",
     //XMSG
     "PRODUCTS_ADDED_TO_CART": "product(s) successfully added to your cart",
     //XTIT
@@ -384,6 +394,8 @@
     "NO_LIMIT": "No Limit",
     //XMSG
     "ERROR_ADDING_TO_CART": "Add to Cart was not successful.  Please try again.",
+    //XMSG
+    "ERROR_ADDING_TO_WISHLIST": "Add to Wishlist was not successful.  Please try again.",
     
     //XTBS
     "DESCRIPTION_TAB": "Description",
@@ -511,6 +523,17 @@
     "ORDER_ITEM_COUNT": "{{number}} Item",
     //XSEL
     "ORDER_ITEMS_COUNT": "{{number}} Items",
+
+    //XGRP
+    "WISHLIST": "Wishlist",
+    //XFLD
+    "PRODUCT": "Product",
+    //XFLD
+    "PRICE": "Price",
+    //XFLD
+    "FAIL_WISHLIST": "Wishlist not available. Try again later.",
+    //XFLD
+    "EMPTY_WISHLIST": "Your wishlist is empty",
 
     //XFLD
     "SHIPPING_DETAILS": "SHIPPING DETAILS",

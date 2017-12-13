@@ -16,8 +16,8 @@
  *  Encapsulates access to the configuration service.
  */
 angular.module('ds.shared')
-    .factory('ConfigSvc', ['$rootScope', '$q', 'settings', 'GlobalData', 'AuthSvc', 'AccountSvc', 'CartSvc', 'CategorySvc', 'SiteSettingsREST',
-        function ($rootScope, $q, settings, GlobalData, AuthSvc, AccountSvc, CartSvc, CategorySvc, SiteSettingsREST) {
+    .factory('ConfigSvc', ['$rootScope', '$q', 'settings', 'GlobalData', 'AuthSvc', 'AccountSvc', 'CartSvc', 'WishlistSvc', 'CategorySvc', 'SiteSettingsREST',
+        function ($rootScope, $q, settings, GlobalData, AuthSvc, AccountSvc, CartSvc, WishlistSvc, CategorySvc, SiteSettingsREST) {
             var initialized = false;
             var selectedSiteCode = '';
 
@@ -135,6 +135,7 @@ angular.module('ds.shared')
                                     }).then(function (account) {
                                         if(account) {
                                             CartSvc.refreshCartAfterLogin(account.id);
+                                            WishlistSvc.refreshWishlistAfterLogin(account.id);
                                         }
                                     });
                                 } else {

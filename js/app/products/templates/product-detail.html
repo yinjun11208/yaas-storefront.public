@@ -75,7 +75,7 @@
                                 <div ng-if="error" class="col-md-8 col-md-offset-2">
                                     <div class="error">
                                         <small class="help-inline has-error">
-                                            {{'ERROR_ADDING_TO_CART' | translate}}
+                                            {{error | translate}}
                                         </small>
                                     </div>
                                 </div>
@@ -84,6 +84,12 @@
                                 <div class="col-md-8 col-md-offset-2">
                                     <button id="buy-button" type="button" class="btn btn-primary btn-block buyButton" ng-click="addToCartFromDetailPage()"
                                         ng-disabled="!buyButtonEnabled">{{'ADD_TO_CART' | translate}}</button>
+                                </div>
+
+                                <!-- add to wishlist -->
+                                <div class="col-md-8 col-md-offset-2">
+                                    <button id="wish-button" type="button" class="btn btn-primary btn-block buyButton" ng-click="addToWishlistFromDetailPage()" ng-disabled="!wishButtonEnabled" ng-if="!addedToWishlist">{{'ADD_TO_WISHLIST' | translate}}</button>
+                                    <button id="wish-button" type="button" class="btn btn-primary btn-block buyButton" ng-click="addToWishlistFromDetailPage()" disabled="true" ng-if="addedToWishlist">{{'ALREADY_IN_WISHLIST' | translate}}</button>
                                 </div>
 
                                 <!-- product fees -->
