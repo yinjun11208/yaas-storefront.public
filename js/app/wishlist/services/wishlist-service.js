@@ -200,11 +200,11 @@ angular.module('ds.wishlist')
 
                 WishlistREST.Wishlist.one('wishlists', wishlistId).all('wishlistItems').getList()
                         .then(function (response) {
+                    wishlist.items = [];
                     var items = response.plain();
                     if (items.length > 0) {
                         fillWishlistItems(items, 0, deferred);
                     } else {
-                        wishlist.items = [];
                         $rootScope.$emit('wishlist:updated', { wishlist: wishlist, source: 'auto' });
                         deferred.resolve();
                     }
