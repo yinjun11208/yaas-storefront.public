@@ -1,0 +1,12 @@
+<div class="row">
+	<div class="col-md-12 array-row">
+		<span ng-if="displayedName">{{displayedName}}</span>
+		<strong>
+			<span ng-repeat="item in value track by $index" class="array-row" ng-class="{'array-row-last':$last}">
+	    		<product-extension-item value="item" definition="definition.items" islastobject="$last" ></product-extension-item>
+			</span>
+		</strong>
+	</div>
+</div>
+
+

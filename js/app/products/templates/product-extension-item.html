@@ -1,0 +1,13 @@
+<div class="product-extension-item">
+    <span ng-switch="type">
+        <span ng-switch-when="array">
+            <ng-include src="'js/app/products/templates/product-extension-item/_array.html'"></ng-include>
+        </span>
+        <span ng-switch-when="object">
+            <ng-include src="'js/app/products/templates/product-extension-item/_object.html'"></ng-include>
+        </span>
+        <span ng-switch-default>
+            <ng-include src="'js/app/products/templates/product-extension-item/_default.html'"></ng-include>
+        </span>
+    </span>
+</div>
